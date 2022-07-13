@@ -18,7 +18,6 @@
     <modules>
         <module>code-generator-model</module>
         <module>code-generator-utils</module>
-        <module>code-generator-service</module>
         <module>code-generator-controller</module>
     </modules>
 </project>
