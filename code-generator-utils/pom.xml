@@ -22,8 +22,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <code-generator-model.version>1.0.0-SNAPSHOT</code-generator-model.version>
         <zxing-core.version>3.5.0</zxing-core.version>
+        <code-generator-model.version>1.0.0-SNAPSHOT</code-generator-model.version>
     </properties>
 
     <dependencies>

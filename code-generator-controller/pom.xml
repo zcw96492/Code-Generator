@@ -23,10 +23,17 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <druid-spring-boot-starter.version>1.2.11</druid-spring-boot-starter.version>
+        <mysql-connector-java.version>8.0.29</mysql-connector-java.version>
         <code-generator-utils.version>1.0.0-SNAPSHOT</code-generator-utils.version>
     </properties>
 
     <dependencies>
+        <!-- SpringBoot + Starter -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
         <!-- SpringBoot + Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -38,13 +45,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <!-- SpringBoot + Druid -->
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-            <version>${druid-spring-boot-starter.version}</version>
         </dependency>
 
         <!-- 热部署支持依赖 -->
@@ -127,7 +127,7 @@
                             <!-- 所有的依赖项应该位于lib文件夹 -->
                             <classpathPrefix>lib/</classpathPrefix>
                             <!-- 当用户使用lib命令执行JAR文件时,使用该元素定义将要执行的类名 -->
-                            <mainClass>com.newcore.code.rule.engine.service.OrbpsRuleEngineApplication</mainClass>
+                            <mainClass>com.newcore.code.generator.controller.CodeGeneratorControllerApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
