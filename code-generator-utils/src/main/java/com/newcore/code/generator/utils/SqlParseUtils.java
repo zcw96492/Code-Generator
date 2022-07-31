@@ -38,6 +38,10 @@ public class SqlParseUtils {
     private static final String COMMENT_ORACLE_SQL_LOWER_CASE = "comment on table";
     private static final String COMMENT_ORACLE_SQL_UPPER_CASE = "COMMENT ON TABLE";
 
+    private static final Pattern PATTERN_1 = Pattern.compile("comment `(.*?)\\`");
+    private static final Pattern PATTERN_2 = Pattern.compile("\\`(.*?)\\`");
+    private static final Pattern PATTERN_3 = Pattern.compile("\\((.*?)\\)");
+
     /**
      * 转换SQL语句
      * @param completeTableSql 完整SQL语句
@@ -189,8 +193,6 @@ public class SqlParseUtils {
         return classComment.replaceAll(";","");
     }
 
-    private static final Pattern PATTERN_1 = Pattern.compile("comment `(.*?)\\`");
-
     /**
      * 5.解析表字段,并将表字段转换为实体属性
      * @param completeTableSql 完整SQL语句
@@ -205,25 +207,44 @@ public class SqlParseUtils {
                 substring(completeTableSql.indexOf(PARENTHESES_LEFT) + 1,completeTableSql.lastIndexOf(PARENTHESES_RIGHT));
 
         /* 5.3.匹配Comment,替换备注里的小逗号,防止不小心被当成切割符号切割 */
-        Matcher matcher = PATTERN_1.matcher(fieldList);
-        while(matcher.find()){
-            String commentTemp = matcher.group();
+        Matcher matcher_comma = PATTERN_1.matcher(fieldList);
+        while(matcher_comma.find()){
+            String commentTemp = matcher_comma.group();
             if(commentTemp.contains(",")){
                 String commentTempFinal = commentTemp.replaceAll(",","，");
-                fieldList = fieldList.replace(matcher.group(),commentTempFinal);
+                fieldList = fieldList.replace(matcher_comma.group(),commentTempFinal);
             }
         }
 
-        /* 5.4. */
+        /* 5.4.新增支持Double(10,2)等类型中有英文逗号的特殊情况 */
+        Matcher matcher_double = PATTERN_2.matcher(fieldList);
+        while(matcher_double.find()){
+            String commentTemp = matcher_double.group();
+            if(commentTemp.contains(",")){
+                String commentTempFinal = commentTemp
+                        .replaceAll(",","，")
+                        .replaceAll("\\(","（")
+                        .replaceAll("\\)","）");
+                fieldList = fieldList.replace(matcher_double.group(),commentTempFinal);
+            }
+        }
 
-        /* 5.5. */
+        /* 5.5.新增支持Double(10,2)等类型中有英文逗号的特殊情况 */
+        Matcher matcher_double_two = PATTERN_3.matcher(fieldList);
+        while(matcher_double_two.find()){
+            String commentTemp = matcher_double_two.group();
+            if(commentTemp.contains(",")){
+                String commentTempFinal = commentTemp.replaceAll(",","，");
+                fieldList = fieldList.replace(matcher_double_two.group(),commentTempFinal);
+            }
+        }
 
         /* 5.6. */
         String[] columnLineLevel = fieldList.split(",");
         if(columnLineLevel.length > 0){
             for (int i = 0 ; i < columnLineLevel.length ; i++) {
                 String column = columnLineLevel[i];
-                column.replaceAll("\n","").replaceAll("\t","").trim();
+                column = column.replaceAll("\n","").replaceAll("\t","").trim();
 
                 boolean specialFlag = (!column.contains("constraint") && !column.contains("using") && !column.contains("unique") &&
                         !(column.contains("primary") && column.indexOf("storage") + 3 > column.indexOf("(")) &&
